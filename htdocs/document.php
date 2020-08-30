@@ -242,7 +242,7 @@ $fullpath_original_file_osencoded = dol_osencode($fullpath_original_file); // Ne
 if (!file_exists($fullpath_original_file_osencoded))
 {
 	dol_syslog("ErrorFileDoesNotExists: ".$fullpath_original_file);
-	print "ErrorFileDoesNotExists: ".$original_file;
+	print "ErrorFileDoesNotExists: ".$fullpath_original_file;
 	exit;
 }
 

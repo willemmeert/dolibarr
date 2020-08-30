@@ -31,8 +31,13 @@ require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
 require_once DOL_DOCUMENT_ROOT.'/comm/action/class/actioncomm.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/modules/action/rapport.pdf.php';
 
+global $langs, $hookmanager, $conf, $user, $db;
+
 // Load translation files required by the page
 $langs->loadLangs(array("agenda", "commercial"));
+
+// Initialize technical object to manage hooks of page. Note that conf->hooks_modules contains array of hook context
+$hookmanager->initHooks(array('agendarapport'));
 
 $action = GETPOST('action', 'alpha');
 $month = GETPOST('month', 'int');
@@ -47,10 +52,39 @@ $offset = $limit * $page;
 if (!$sortorder) $sortorder = "DESC";
 if (!$sortfield) $sortfield = "a.datep";
 
+$filtert = GETPOST("search_filtert", "int", 3) ?GETPOST("search_filtert", "int", 3) : GETPOST("filtert", "int", 3);
+$usergroup = GETPOST("search_usergroup", "int", 3) ?GETPOST("search_usergroup", "int", 3) : GETPOST("usergroup", "int", 3);
+
+// If not choice done on calendar owner (like on left menu link "Agenda"), we filter on user.
+if (empty($filtert) && empty($conf->global->AGENDA_ALL_CALENDARS))
+{
+	$filtert = $user->id;
+}
+
+// Set actioncode (this code must be same for setting actioncode into peruser, listacton and index)
+if (GETPOST('search_actioncode', 'array'))
+{
+    $actioncode = GETPOST('search_actioncode', 'array', 3);
+    if (!count($actioncode)) $actioncode = '0';
+}
+else
+{
+    $actioncode = GETPOST("search_actioncode", "alpha", 3) ?GETPOST("search_actioncode", "alpha", 3) : (GETPOST("search_actioncode") == '0' ? '0' : (empty($conf->global->AGENDA_DEFAULT_FILTER_TYPE) ? '' : $conf->global->AGENDA_DEFAULT_FILTER_TYPE));
+}
+if ($actioncode == '' && empty($actioncodearray)) $actioncode = (empty($conf->global->AGENDA_DEFAULT_FILTER_TYPE) ? '' : $conf->global->AGENDA_DEFAULT_FILTER_TYPE);
+
 // Security check
 $socid = GETPOST('socid', 'int');
 if ($user->socid) $socid = $user->socid;
 $result = restrictedArea($user, 'agenda', $socid, '', 'myactions');
+
+$canedit = 1;
+if (!$user->rights->agenda->myactions->read) accessforbidden();
+if (!$user->rights->agenda->allactions->read) $canedit = 0;
+if (!$user->rights->agenda->allactions->read || $filter == 'mine')  // If no permission to see all, we show only affected to me
+{
+    $filtert = $user->id;
+}
 
 
 /*
@@ -198,6 +232,14 @@ if ($resql)
 	}
 	print "</table>";
 	print '</div>';
+	
+	$parameters = array( "filtert" => $filtert,
+	                     "canedit" => $canedit,
+						 "usergroupid" => $usergroup,
+						 "actioncode" => $actioncode);
+	$object = new stdClass();
+	$reshook = $hookmanager->executeHooks('addFormElements', $parameters, $object, $action);
+	
 	print '</form>';
 
 	$db->free($resql);
