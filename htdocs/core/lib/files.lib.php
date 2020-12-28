@@ -1592,7 +1592,7 @@ function dol_add_file_process($upload_dir, $allowoverwrite = 0, $donotupdatesess
 				$destfile = dol_sanitizeFileName($info['filename'].($info['extension'] != '' ? ('.'.strtolower($info['extension'])) : ''));
 
 				// We apply dol_string_nohtmltag also to clean file names (this remove duplicate spaces) because
-				// this function is also applied when we make try to download file (by the GETPOST(filename, 'alphanohtml') call).
+				// this function is also applied when we rename and when we make try to download file (by the GETPOST(filename, 'alphanohtml') call).
 				$destfile = dol_string_nohtmltag($destfile);
 				$destfull = dol_string_nohtmltag($destfull);
 
@@ -3008,7 +3008,12 @@ function dol_check_secure_access_document($modulepart, $original_file, $entity, 
 			$partofdirinoriginalfile = $partsofdirinoriginalfile[0];
 			if ($partofdirinoriginalfile && ($fuser->rights->$modulepart->$partofdirinoriginalfile->{$lire} || $fuser->rights->$modulepart->$partofdirinoriginalfile->{$read})) $accessallowed = 1;
 			if ($fuser->rights->$modulepart->{$lire} || $fuser->rights->$modulepart->{$read}) $accessallowed = 1;
-			$original_file = $conf->$modulepart->dir_output.'/'.$original_file;
+
+			if (is_array($conf->$modulepart->multidir_output) && !empty($conf->$modulepart->multidir_output[$entity])) {
+				$original_file = $conf->$modulepart->multidir_output[$entity].'/'.$original_file;
+			} else {
+				$original_file = $conf->$modulepart->dir_output.'/'.$original_file;
+			}
 		}
 
 		// For modules who wants to manage different levels of permissions for documents

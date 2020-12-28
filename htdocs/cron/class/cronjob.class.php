@@ -1031,7 +1031,8 @@ class Cronjob extends CommonObject
 			if (!$error)
 			{
 				$result = $langs->load($this->module_name);
-				$result = $langs->load($this->module_name.'@'.$this->module_name); // If this->module_name was an existing language file, this will make nothing
+				$result = $langs->load($this->module_name.'@'.$this->module_name, 0, 0, '', 0, 1);
+
 				if ($result < 0)	// If technical error
 				{
 					dol_syslog(get_class($this)."::run_jobs Cannot load module lang file - ".$langs->error, LOG_ERR);
@@ -1051,7 +1052,10 @@ class Cronjob extends CommonObject
 				$object = new $this->objectname($this->db);
 				if ($this->entity > 0) $object->entity = $this->entity; // We work on a dedicated entity
 
-				$params_arr = array_map('trim', explode(",", $this->params));
+				$params_arr = array();
+				if (!empty($this->params) || $this->params === '0'){
+					$params_arr = array_map('trim', explode(",", $this->params));
+				}
 
 				if (!is_array($params_arr))
 				{

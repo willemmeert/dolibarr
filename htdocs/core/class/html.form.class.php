@@ -1245,17 +1245,15 @@ class Form
 
 		// On recherche les societes
 		$sql = "SELECT s.rowid, s.nom as name, s.name_alias, s.client, s.fournisseur, s.code_client, s.code_fournisseur";
-
 		if ($conf->global->COMPANY_SHOW_ADDRESS_SELECTLIST) {
 			$sql .= ", s.address, s.zip, s.town";
 			$sql .= ", dictp.code as country_code";
 		}
-
 		$sql .= " FROM ".MAIN_DB_PREFIX."societe as s";
-		if (!$user->rights->societe->client->voir && !$user->socid) $sql .= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
 		if ($conf->global->COMPANY_SHOW_ADDRESS_SELECTLIST) {
-			$sql .= " LEFT OUTER JOIN ".MAIN_DB_PREFIX."c_country as dictp ON dictp.rowid=s.fk_pays";
+			$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."c_country as dictp ON dictp.rowid = s.fk_pays";
 		}
+		if (!$user->rights->societe->client->voir && !$user->socid) $sql .= ", ".MAIN_DB_PREFIX."societe_commerciaux as sc";
 		$sql .= " WHERE s.entity IN (".getEntity('societe').")";
 		if (!empty($user->socid)) $sql .= " AND s.rowid = ".$user->socid;
 		if ($filter) $sql .= " AND (".$filter.")";
@@ -6193,12 +6191,6 @@ class Form
 		$resql = $this->db->query($sql);
 		if ($resql)
 		{
-			if (!$forcecombo)
-			{
-				include_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
-				$out .= ajax_combobox($htmlname, null, $conf->global->$confkeyforautocompletemode);
-			}
-
 			// Construct $out and $outarray
 			$out .= '<select id="'.$htmlname.'" class="flat'.($morecss ? ' '.$morecss : '').'"'.($disabled ? ' disabled="disabled"' : '').($moreparams ? ' '.$moreparams : '').' name="'.$htmlname.'">'."\n";
 
@@ -6249,6 +6241,12 @@ class Form
 			}
 
 			$out .= '</select>'."\n";
+
+			if (!$forcecombo)
+			{
+				include_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
+				$out .= ajax_combobox($htmlname, null, $conf->global->$confkeyforautocompletemode);
+			}
 		}
 		else
 		{
@@ -6681,8 +6679,7 @@ class Form
 							 	templateSelection: formatSelection		/* For 4.0 */
 							});
 						});'."\n";
-			}
-			elseif ($addjscombo == 2)
+			} elseif ($addjscombo == 2 && ! defined('DISABLE_MULTISELECT'))
 			{
 				// Add other js lib
 				// TODO external lib multiselect/jquery.multi-select.js must have been loaded to use this multiselect plugin
@@ -7400,7 +7397,7 @@ class Form
 		}
 
 		//if ($conf->browser->layout == 'phone') $ret.='<div class="clearboth"></div>';
-		$ret .= '<div class="inline-block floatleft valignmiddle refid'.(($shownav && ($previous_ref || $next_ref)) ? ' refidpadding' : '').'">';
+		$ret .= '<div class="inline-block floatleft valignmiddle maxwidth750 marginbottomonly refid'.(($shownav && ($previous_ref || $next_ref)) ? ' refidpadding' : '').'">';
 
 		// For thirdparty, contact, user, member, the ref is the id, so we show something else
 		if ($object->element == 'societe')
@@ -7820,7 +7817,7 @@ class Form
             $(document).ready(function() {
             	$("#checkallactions'.$id.'").click(function() {
                     if($(this).is(\':checked\')){
-                        console.log("We check all '.$cssclass.'");
+                        console.log("We check all '.$cssclass.' and trigger the change method");
                 		$(".'.$cssclass.'").prop(\'checked\', true).trigger(\'change\');
                     }
                     else

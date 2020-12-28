@@ -324,7 +324,7 @@ if ($socid > 0)
 
 foreach ($search as $key => $val)
 {
-    if ($key == 'fk_statut')
+    if ($key == 'fk_statut' && !empty($search['fk_statut']))
 	{
 		$newarrayofstatus = array();
 		foreach ($search['fk_statut'] as $key2 => $val2) {
@@ -345,7 +345,7 @@ foreach ($search as $key => $val)
 	    if (count($newarrayofstatus)) $sql .= natural_search($key, join(',', $newarrayofstatus), 2);
 	    continue;
 	}
-	if ($key == 'fk_user_assign')
+	if ($key == 'fk_user_assign' || $key == 'fk_user_create')
 	{
 	    if ($search[$key] > 0) $sql .= natural_search($key, $search[$key], 2);
 	    continue;
@@ -441,10 +441,10 @@ if ($socid && !$projectid && !$project_ref && $user->rights->societe->lire) {
             print '<tr><td class="titlefield">';
             print $langs->trans('CustomerCode').'</td><td>';
             print $socstat->code_client;
-            if ($socstat->check_codeclient() != 0) {
-                print ' <font class="error">('.$langs->trans("WrongCustomerCode").')</font>';
+            $tmpcheck = $socstat->check_codeclient();
+            if ($tmpcheck != 0 && $tmpcheck != -5) {
+            	print ' <font class="error">('.$langs->trans("WrongCustomerCode").')</font>';
             }
-
             print '</td>';
             print '</tr>';
         }
@@ -453,10 +453,10 @@ if ($socid && !$projectid && !$project_ref && $user->rights->societe->lire) {
         	print '<tr><td class="titlefield">';
         	print $langs->trans('SupplierCode').'</td><td>';
         	print $socstat->code_fournisseur;
-        	if ($socstat->check_codefournisseur() != 0) {
+        	$tmpcheck = $socstat->check_codefournisseur();
+        	if ($tmpcheck != 0 && $tmpcheck != -5) {
         		print ' <font class="error">('.$langs->trans("WrongSupplierCode").')</font>';
         	}
-
         	print '</td>';
         	print '</tr>';
         }
@@ -644,7 +644,7 @@ foreach ($object->fields as $key => $val)
 			print '<td class="liste_titre'.($cssforfield ? ' '.$cssforfield : '').'">';
 			$formTicket->selectSeveritiesTickets(dol_escape_htmltag($search[$key]), 'search_'.$key.'', '', 2, 1, 1, 0, ($val['css'] ? $val['css'] : 'maxwidth150'));
 			print '</td>';
-		} elseif ($key == 'fk_user_assign') {
+		} elseif ($key == 'fk_user_assign' || $key == 'fk_user_create') {
 		    print '<td class="liste_titre'.($cssforfield ? ' '.$cssforfield : '').'">';
 		    print $form->select_dolusers($search[$key], 'search_'.$key, 1, null, 0, '', '', '0', 0, 0, '', 0, '', ($val['css'] ? $val['css'] : 'maxwidth150'));
 		    print '</td>';

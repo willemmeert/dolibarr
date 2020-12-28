@@ -2077,7 +2077,7 @@ class Societe extends CommonObject
 			$discount->amount_tva = $discount->multicurrency_amount_tva = price2num($remise * $vatrate / 100, 'MT');
 			$discount->amount_ttc = $discount->multicurrency_amount_ttc = price2num($discount->amount_ht + $discount->amount_tva, 'MT');
 
-			$discount->tva_tx = price2num($vatrate, 'MT');
+			$discount->tva_tx = price2num($vatrate);
 			$discount->vat_src_code = $vat_src_code;
 
 			$discount->description = $desc;
@@ -2520,7 +2520,15 @@ class Societe extends CommonObject
 
 		global $action;
 		$hookmanager->initHooks(array('thirdpartydao'));
-		$parameters = array('id'=>$this->id, 'getnomurl'=>$result);
+		$parameters = array(
+			'id'=>$this->id,
+			'getnomurl'=>$result,
+			'withpicto '=> $withpicto,
+			'option'=> $option,
+			'maxlen'=> $maxlen,
+			'notooltip'=> $notooltip,
+			'save_lastsearch_value'=> $save_lastsearch_value
+		);
 		$reshook = $hookmanager->executeHooks('getNomUrl', $parameters, $this, $action); // Note that $action and $object may have been modified by some hooks
 		if ($reshook > 0) $result = $hookmanager->resPrint;
 		else $result .= $hookmanager->resPrint;
@@ -3010,6 +3018,8 @@ class Societe extends CommonObject
 	 * 								-2 ErrorCustomerCodeRequired
 	 * 								-3 ErrorCustomerCodeAlreadyUsed
 	 * 								-4 ErrorPrefixRequired
+	 * 								-5 NotConfigured - Setup empty so any value may be ok or not
+	 * 								-6 Other (see this->error)
 	 */
     public function check_codeclient()
 	{

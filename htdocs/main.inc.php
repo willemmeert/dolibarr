@@ -232,6 +232,7 @@ if (!empty($conf->debugbar->enabled) && !GETPOST('dol_use_jmobile') && empty($_S
     include_once DOL_DOCUMENT_ROOT.'/debugbar/class/DebugBar.php';
     $debugbar = new DolibarrDebugBar();
     $renderer = $debugbar->getRenderer();
+    if (empty($conf->global->MAIN_HTML_HEADER)) $conf->global->MAIN_HTML_HEADER = '';
     $conf->global->MAIN_HTML_HEADER .= $renderer->renderHead();
 
     $debugbar['time']->startMeasure('pageaftermaster', 'Page generation (after environment init)');
@@ -886,7 +887,7 @@ if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER) && !empty($user->conf->MAI
 }
 
 // set MAIN_OPTIMIZEFORCOLORBLIND for user
-$conf->global->MAIN_OPTIMIZEFORCOLORBLIND = $user->conf->MAIN_OPTIMIZEFORCOLORBLIND;
+$conf->global->MAIN_OPTIMIZEFORCOLORBLIND = empty($user->conf->MAIN_OPTIMIZEFORCOLORBLIND) ? '' : $user->conf->MAIN_OPTIMIZEFORCOLORBLIND;
 
 // Set terminal output option according to conf->browser.
 if (GETPOST('dol_hide_leftmenu', 'int') || !empty($_SESSION['dol_hide_leftmenu']))               $conf->dol_hide_leftmenu = 1;
@@ -1127,8 +1128,8 @@ function top_httphead($contenttype = 'text/html', $forcenocache = 0)
 		//	// A default security policy that keep usage of js external component like ckeditor, stripe, google, working
 		//	$contentsecuritypolicy = "font-src *; img-src *; style-src * 'unsafe-inline' 'unsafe-eval'; default-src 'self' *.stripe.com 'unsafe-inline' 'unsafe-eval'; script-src 'self' *.stripe.com 'unsafe-inline' 'unsafe-eval'; frame-src 'self' *.stripe.com; connect-src 'self';";
 		//}
-		//else $contentsecuritypolicy = $conf->global->MAIN_HTTP_CONTENT_SECURITY_POLICY;
-		$contentsecuritypolicy = $conf->global->MAIN_HTTP_CONTENT_SECURITY_POLICY;
+		//else
+		$contentsecuritypolicy = empty($conf->global->MAIN_HTTP_CONTENT_SECURITY_POLICY) ? '': $conf->global->MAIN_HTTP_CONTENT_SECURITY_POLICY;
 
 		if (!is_object($hookmanager)) $hookmanager = new HookManager($db);
 		$hookmanager->initHooks(array("main"));
@@ -1429,6 +1430,10 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
             	$tmpplugin = empty($conf->global->MAIN_USE_JQUERY_MULTISELECT) ?constant('REQUIRE_JQUERY_MULTISELECT') : $conf->global->MAIN_USE_JQUERY_MULTISELECT;
             	print '<script src="'.DOL_URL_ROOT.'/includes/jquery/plugins/'.$tmpplugin.'/dist/js/'.$tmpplugin.'.full.min.js'.($ext ? '?'.$ext : '').'"></script>'."\n"; // We include full because we need the support of containerCssClass
             }
+            if (! defined('DISABLE_MULTISELECT'))     // jQuery plugin "mutiselect" to select with checkboxes. Can be removed once we have an enhanced search tool
+            {
+            	print '<script src="'.DOL_URL_ROOT.'/includes/jquery/plugins/multiselect/jquery.multi-select.js'.($ext?'?'.$ext:'').'"></script>'."\n";
+            }
 		}
 
         if (!$disablejs && !empty($conf->use_javascript_ajax))
@@ -1593,6 +1598,7 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 		if (!empty($conf->global->MAIN_FEATURES_LEVEL)) $appli .= "<br>".$langs->trans("LevelOfFeature").': '.$conf->global->MAIN_FEATURES_LEVEL;
 
 		$logouttext = '';
+		$logouthtmltext = '';
 		if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER))
 		{
 			//$logouthtmltext=$appli.'<br>';
@@ -1698,9 +1704,10 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 			}
 		}
 
-		$text = '<span href="#" class="aversion"><span class="hideonsmartphone small">'.DOL_VERSION.'</span></span>';
-		$toprightmenu .= @Form::textwithtooltip('', $appli, 2, 1, $text, 'login_block_elem', 2);
-
+		if (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER)) {
+			$text = '<span class="aversion"><span class="hideonsmartphone small">'.DOL_VERSION.'</span></span>';
+			$toprightmenu .= @Form::textwithtooltip('', $appli, 2, 1, $text, 'login_block_elem', 2);
+		}
 
 		// Logout link
 		$toprightmenu .= @Form::textwithtooltip('', $logouthtmltext, 2, 1, $logouttext, 'login_block_elem logout-btn', 2);

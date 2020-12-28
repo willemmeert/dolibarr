@@ -7,7 +7,7 @@
  * Copyright (C) 2005-2014 Regis Houssin         <regis.houssin@inodbox.com>
  * Copyright (C) 2006      Andre Cianfarani      <acianfa@free.fr>
  * Copyright (C) 2007      Franky Van Liedekerke <franky.van.liedekerke@telenet.be>
- * Copyright (C) 2010-2016 Juanjo Menent         <jmenent@2byte.es>
+ * Copyright (C) 2010-2020 Juanjo Menent         <jmenent@2byte.es>
  * Copyright (C) 2012-2014 Christophe Battarel   <christophe.battarel@altairis.fr>
  * Copyright (C) 2012-2015 Marcos García         <marcosgdf@gmail.com>
  * Copyright (C) 2012      Cédric Salvador       <csalvador@gpcsolutions.fr>
@@ -2229,6 +2229,9 @@ class Facture extends CommonInvoice
 				$resql = $this->db->query($sql);
 				if ($resql)
 				{
+					// Delete record into ECM index (Note that delete is also done when deleting files with the dol_delete_dir_recursive
+					$this->deleteEcmFiles();
+
 					// On efface le repertoire de pdf provisoire
 					$ref = dol_sanitizeFileName($this->ref);
 					if ($conf->facture->dir_output && !empty($this->ref))
@@ -2520,7 +2523,7 @@ class Facture extends CommonInvoice
 		$this->db->begin();
 
 		// Check parameters
-		if ($this->type == self::TYPE_REPLACEMENT)		// si facture de remplacement
+		if ($this->type == self::TYPE_REPLACEMENT)		// if this is a replacement invoice
 		{
 			// Controle que facture source connue
 			if ($this->fk_facture_source <= 0)
@@ -2530,7 +2533,7 @@ class Facture extends CommonInvoice
 				return -10;
 			}
 
-			// Charge la facture source a remplacer
+			// Load source invoice that has been replaced
 			$facreplaced = new Facture($this->db);
 			$result = $facreplaced->fetch($this->fk_facture_source);
 			if ($result <= 0)
@@ -2540,7 +2543,7 @@ class Facture extends CommonInvoice
 				return -11;
 			}
 
-			// Controle que facture source non deja remplacee par une autre
+			// Check that source invoice not already replaced by another one.
 			$idreplacement = $facreplaced->getIdReplacingInvoice('validated');
 			if ($idreplacement && $idreplacement != $this->id)
 			{
@@ -3230,7 +3233,7 @@ class Facture extends CommonInvoice
 		}
 		else
 		{
-			dol_syslog(get_class($this)."::addline status of order must be Draft to allow use of ->addline()", LOG_ERR);
+			dol_syslog(get_class($this)."::addline status of invoice must be Draft to allow use of ->addline()", LOG_ERR);
 			return -3;
 		}
 	}
@@ -3323,6 +3326,7 @@ class Facture extends CommonInvoice
 
 			// Clean vat code
     		$vat_src_code = '';
+    		$reg = array();
     		if (preg_match('/\((.*)\)/', $txtva, $reg))
     		{
     		    $vat_src_code = $reg[1];
@@ -3422,10 +3426,10 @@ class Facture extends CommonInvoice
 			$this->line->pa_ht = $pa_ht;
 
 			// Multicurrency
-			$this->line->multicurrency_subprice		= $pu_ht_devise;
-			$this->line->multicurrency_total_ht 	= $multicurrency_total_ht;
-            $this->line->multicurrency_total_tva 	= $multicurrency_total_tva;
-            $this->line->multicurrency_total_ttc 	= $multicurrency_total_ttc;
+			$this->line->multicurrency_subprice		= ($this->type == self::TYPE_CREDIT_NOTE ?-abs($pu_ht_devise) : $pu_ht_devise); // For credit note, unit price always negative, always positive otherwise
+			$this->line->multicurrency_total_ht 	= (($this->type == self::TYPE_CREDIT_NOTE || $qty < 0) ?-abs($multicurrency_total_ht) : $multicurrency_total_ht); // For credit note and if qty is negative, total is negative
+			$this->line->multicurrency_total_tva 	= (($this->type == self::TYPE_CREDIT_NOTE || $qty < 0) ?-abs($multicurrency_total_tva) : $multicurrency_total_tva);
+			$this->line->multicurrency_total_ttc 	= (($this->type == self::TYPE_CREDIT_NOTE || $qty < 0) ?-abs($multicurrency_total_ttc) : $multicurrency_total_ttc);
 
 			if (is_array($array_options) && count($array_options) > 0) {
 				// We replace values in this->line->array_options only for entries defined into $array_options
@@ -4394,15 +4398,14 @@ class Facture extends CommonInvoice
 	 *  @param  int			$hidedetails    Hide details of lines
 	 *  @param  int			$hidedesc       Hide description
 	 *  @param  int			$hideref        Hide ref
-	 *  @param   null|array  $moreparams     Array to provide more information
+	 *  @param  null|array  $moreparams     Array to provide more information
 	 *	@return int        					<0 if KO, >0 if OK
 	 */
 	public function generateDocument($modele, $outputlangs, $hidedetails = 0, $hidedesc = 0, $hideref = 0, $moreparams = null)
 	{
 		global $conf, $langs;
 
-		$langs->load("bills");
-		$outputlangs->load("products");
+		$outputlangs->loadLangs(array("bills", "products"));
 
 		if (!dol_strlen($modele))
 		{

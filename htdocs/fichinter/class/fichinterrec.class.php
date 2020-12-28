@@ -481,7 +481,6 @@ class FichinterRec extends Fichinter
                 $pu = $pu_ttc;
             }
 
-
             // Calcul du total TTC et de la TVA pour la ligne a partir de
             // qty, pu, remise_percent et txtva
             // TRES IMPORTANT: C'est au moment de l'insertion ligne qu'on doit stocker
@@ -567,14 +566,14 @@ class FichinterRec extends Fichinter
         if ($user->rights->fichinter->creer) {
             $sql = "UPDATE ".MAIN_DB_PREFIX."fichinter_rec ";
             $sql .= " SET frequency='".$this->db->escape($freq)."'";
-            $sql .= ", last_gen='".$this->db->escape($courant)."'";
+            $sql .= ", date_last_gen='".$this->db->escape($courant)."'";
             $sql .= " WHERE rowid = ".$this->id;
 
             $resql = $this->db->query($sql);
 
             if ($resql) {
                 $this->frequency = $freq;
-                $this->last_gen = $courant;
+                $this->date_last_gen = $courant;
                 return 0;
             } else {
                 dol_print_error($this->db);

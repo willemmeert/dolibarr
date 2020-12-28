@@ -1,7 +1,7 @@
 <?php
 /* Copyright (C) 2006-2015 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2013 Regis Houssin        <regis.houssin@inodbox.com>
- * Copyright (C) 2010-2015 Juanjo Menent        <jmenent@2byte.es>
+ * Copyright (C) 2010-2020 Juanjo Menent        <jmenent@2byte.es>
  * Copyright (C) 2012-2013 Christophe Battarel  <christophe.battarel@altairis.fr>
  * Copyright (C) 2011-2019 Philippe Grand       <philippe.grand@atoo-net.com>
  * Copyright (C) 2012-2015 Marcos García        <marcosgdf@gmail.com>
@@ -2836,7 +2836,7 @@ abstract class CommonObject
 	{
         // phpcs:enable
         $positionfield = 'rang';
-		if ($this->table_element == 'bom') $positionfield = 'position';
+		if ($this->table_element == 'bom_bom') $positionfield = 'position';
 
 		// Search the last rang with fk_parent_line
 		if ($fk_parent_line)
@@ -7186,7 +7186,7 @@ abstract class CommonObject
 					// HTML, select, integer and text add default value
 					if (in_array($extrafields->attributes[$this->table_element]['type'][$key], array('html', 'text', 'select', 'int')))
 					{
-						if ($action == 'create') $value = GETPOSTISSET($keyprefix.'options_'.$key.$keysuffix) ? GETPOST($keyprefix.'options_'.$key.$keysuffix, 'none', 3) : $extrafields->attributes[$this->table_element]['default'][$key];
+						if ($action == 'create') $value = GETPOSTISSET($keyprefix.'options_'.$key.$keysuffix) ? GETPOST($keyprefix.'options_'.$key.$keysuffix, 'none', 3) : ($this->array_options['options_'.$key] ? $this->array_options['options_'.$key] : $extrafields->attributes[$this->table_element]['default'][$key]);
 						else $value = $this->array_options['options_'.$key];
 					}
 
@@ -7261,6 +7261,9 @@ abstract class CommonObject
 								var parent = $(this).find("option[parent]:first").attr("parent");
 								var infos = parent.split(":");
 								var parent_list = infos[0];
+								showOptions(child_list, parent_list);
+
+								/* Activate the handler to call showOptions on each future change */
 								$("select[name=\""+parent_list+"\"]").change(function() {
 									showOptions(child_list, parent_list);
 								});
@@ -8376,6 +8379,18 @@ abstract class CommonObject
 			}
 		}
 
+		// Delete llx_ecm_files
+		if (!$error) {
+			$sql = 'DELETE FROM '.MAIN_DB_PREFIX."ecm_files WHERE src_object_type = '".$this->db->escape($this->table_element.(empty($this->module) ? '' : '@'.$this->module))."' AND src_object_id = ".$this->id;
+			$resql = $this->db->query($sql);
+			if (!$resql)
+			{
+				$this->error = $this->db->lasterror();
+				$this->errors[] = $this->error;
+				$error++;
+			}
+		}
+
 		if (!$error && !empty($this->isextrafieldmanaged))
 		{
 			$result = $this->deleteExtraFields();
@@ -8673,5 +8688,50 @@ abstract class CommonObject
 
 		$this->db->commit();
 		return 1;
+	}
+
+	/**
+	 * Delete related files of object in database
+	 *
+	 * @return bool
+	 */
+	public function deleteEcmFiles()
+	{
+		global $conf;
+
+		$this->db->begin();
+
+		switch ($this->element){
+			case 'propal':
+				$element = 'propale';
+				break;
+			case 'product':
+				$element = 'produit';
+				break;
+			case 'order_supplier':
+				$element ='fournisseur/commande';
+				break;
+			case 'invoice_supplier':
+				$element = 'fournisseur/facture/' . get_exdir($this->id, 2, 0, 1, $this, 'invoice_supplier');
+				break;
+			case 'shipping':
+				$element = 'expedition/sending';
+				break;
+			default:
+				$element = $this->element;
+		}
+
+		$sql = "DELETE FROM ".MAIN_DB_PREFIX."ecm_files";
+		$sql.= " WHERE filename LIKE '".$this->db->escape($this->ref)."%'";
+		$sql.= " AND filepath = '".$element."/".$this->db->escape($this->ref)."' AND entity = ".$conf->entity;
+
+		if (!$this->db->query($sql)) {
+			$this->error = $this->db->lasterror();
+			$this->db->rollback();
+			return false;
+		}
+
+		$this->db->commit();
+		return true;
 	}
 }

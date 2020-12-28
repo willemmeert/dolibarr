@@ -3,7 +3,7 @@
  * Copyright (C) 2005-2012	Regis Houssin			<regis.houssin@inodbox.com>
  * Copyright (C) 2007		Franky Van Liedekerke	<franky.van.liedekerke@telenet.be>
  * Copyright (C) 2006-2012	Laurent Destailleur		<eldy@users.sourceforge.net>
- * Copyright (C) 2011-2017	Juanjo Menent			<jmenent@2byte.es>
+ * Copyright (C) 2011-2020	Juanjo Menent			<jmenent@2byte.es>
  * Copyright (C) 2013       Florian Henry		  	<florian.henry@open-concept.pro>
  * Copyright (C) 2014		Cedric GROSS			<c.gross@kreiz-it.fr>
  * Copyright (C) 2014-2015  Marcos García           <marcosgdf@gmail.com>
@@ -954,33 +954,36 @@ class Expedition extends CommonObject
 		{
 			$fk_product = $orderline->fk_product;
 
-			if (!($entrepot_id > 0) && empty($conf->global->STOCK_WAREHOUSE_NOT_REQUIRED_FOR_SHIPMENTS))
-			{
+			if (!($entrepot_id > 0) && empty($conf->global->STOCK_WAREHOUSE_NOT_REQUIRED_FOR_SHIPMENTS)) {
 				$langs->load("errors");
 				$this->error = $langs->trans("ErrorWarehouseRequiredIntoShipmentLine");
 				return -1;
 			}
 
-			if ($conf->global->STOCK_MUST_BE_ENOUGH_FOR_SHIPMENT)
-			{
-				// Check must be done for stock of product into warehouse if $entrepot_id defined
+			if ($conf->global->STOCK_MUST_BE_ENOUGH_FOR_SHIPMENT) {
 				$product = new Product($this->db);
-				$result = $product->fetch($fk_product);
+				$product->fetch($fk_product);
 
+				// Check must be done for stock of product into warehouse if $entrepot_id defined
 				if ($entrepot_id > 0) {
 					$product->load_stock('warehouseopen');
 					$product_stock = $product->stock_warehouse[$entrepot_id]->real;
-				}
-				else
+				} else {
 					$product_stock = $product->stock_reel;
+				}
 
 				$product_type = $product->type;
-				if ($product_type == 0 && $product_stock < $qty)
-				{
-					$langs->load("errors");
-					$this->error = $langs->trans('ErrorStockIsNotEnoughToAddProductOnShipment', $product->ref);
-					$this->db->rollback();
-					return -3;
+				if ($product_type == 0 || !empty($conf->global->STOCK_SUPPORTS_SERVICES)) {
+					$isavirtualproduct = ($product->hasFatherOrChild(1) > 0);
+					// The product is qualified for a check of quantity (must be enough in stock to be added into shipment).
+					if (!$isavirtualproduct || empty($conf->global->PRODUIT_SOUSPRODUITS) || ($isavirtualproduct && empty($conf->global->STOCK_EXCLUDE_VIRTUAL_PRODUCTS))) {  // If STOCK_EXCLUDE_VIRTUAL_PRODUCTS is set, we do not manage stock for kits/virtual products.
+						if ($product_stock < $qty) {
+							$langs->load("errors");
+							$this->error = $langs->trans('ErrorStockIsNotEnoughToAddProductOnShipment', $product->ref);
+							$this->db->rollback();
+							return -3;
+						}
+					}
 				}
 			}
 		}
@@ -1562,6 +1565,9 @@ class Expedition extends CommonObject
 						if (!$error)
 						{
 							$this->db->commit();
+
+							// Delete record into ECM index (Note that delete is also done when deleting files with the dol_delete_dir_recursive
+							$this->deleteEcmFiles();
 
 							// We delete PDFs
 							$ref = dol_sanitizeFileName($this->ref);
