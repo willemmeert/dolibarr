@@ -77,6 +77,7 @@ TypeContact_propal_external_SHIPPING=Klant contact voor levering
 # Document models
 DocModelAzurDescription=Een compleet offertemodel (oude implementatie van Cyaan sjabloon)
 DocModelCyanDescription=Een compleet offertemodel
+DocModelMMTPropMDescription=Offertemodel MEMA voor machines
 DefaultModelPropalCreate=Standaard model aanmaken
 DefaultModelPropalToBill=Standaard sjabloon bij het sluiten van een zakelijk voorstel (te factureren)
 DefaultModelPropalClosed=Standaard sjabloon bij het sluiten van een zakelijk voorstel (nog te factureren)
@@ -88,4 +89,5 @@ IdProposal=Offerte-ID
 IdProduct=Product-ID
 PrParentLine=Voorstel bovenliggende lijn
 LineBuyPriceHT=Koopprijs bedrag exclusief BTW voor regel
-
+# added MEMA
+ProposalCondMach = De machines blijven eigendom van de nv MEMA Machinery & Tools tot volledige betaling van de factuur.

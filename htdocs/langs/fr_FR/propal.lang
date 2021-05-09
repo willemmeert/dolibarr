@@ -78,6 +78,7 @@ TypeContact_propal_external_SHIPPING=Contact client pour la livraison
 # Document models
 DocModelAzurDescription=Un modèle de proposition complet (ancienne implémentation du modèle Cyan)
 DocModelCyanDescription=Un modèle de proposition complet
+DocModelMMTPropMDescription=modèle de proposition de MEMA pour les machines
 DefaultModelPropalCreate=Modèle par défaut à la création
 DefaultModelPropalToBill=Modèle par défaut lors de la clôture d'une proposition commerciale (à facturer)
 DefaultModelPropalClosed=Modèle par défaut lors de la clôture d'une proposition commerciale (non facturée)
@@ -102,3 +103,5 @@ IdProposal=ID de proposition
 IdProduct=ID produit
 PrParentLine=Ligne parent de proposition
 LineBuyPriceHT=Prix ​​d'achat Montant net de taxe pour la ligne
+# added MEMA
+ProposalCondMach = Les machines restent propriété de la société MEMA Machinery & Tools jusque paiment complet de la facture.

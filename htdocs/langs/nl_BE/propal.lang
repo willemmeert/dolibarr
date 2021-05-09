@@ -1,5 +1,19 @@
 # Dolibarr language file - Source file is en_US - propal
+Proposals=Offertes
+Proposal=Offerte
+ProposalShort=Offerte
+ProposalsDraft=Conceptofferte
 ProposalsOpened=Openstaande offertes
+CommercialProposal=Offerte
+PdfCommercialProposalTitle=Offerte
+ProposalCard=Offertedetailkaart
+NewProp=Nieuwe offerte
+NewPropal=Nieuwe offerte
+Prospect=Prospect
+DeleteProp=Offerte verwijderen
+ValidateProp=Offerte valideren
+AddProp=Nieuwe offerte
+ConfirmDeleteProp=Weet u zeker dat u deze offerte wilt verwijderen?
 ConfirmValidateProp=Weet u zeker dat u deze offerte met naam <b>%s</b> wilt valideren?
 LastModifiedProposals=Laatste %s gewijzigde offertes
 NoProposal=Geen offerte
@@ -11,3 +25,6 @@ TypeContact_propal_internal_SALESREPFOLL=Vertegenwoordiger die de offerte opvolg
 TypeContact_propal_external_BILLING=Contactpersoon afnemersfactuur
 TypeContact_propal_external_SHIPPING=Klantcontact voor leveringen
 ProposalCustomerSignature=Stempel, datum en handtekening met vermelding "Voor Akkoord"
+DocModelMMTPropMDescription=Offertemodel MEMA voor machines
+# added MEMA
+ProposalCondMach = De machines blijven eigendom van de nv MEMA Machinery & Tools tot volledige betaling van de factuur.
