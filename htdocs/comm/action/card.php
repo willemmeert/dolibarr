@@ -47,6 +47,13 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formprojet.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
 require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 
+// Eclipse definitions
+/** @var Translate $langs **/
+/** @var User $user **/
+/** @var DoliDB $db **/
+/** @var HookManager $hookmanager **/
+/** @var Conf $conf **/
+
 // Load translation files required by the page
 $langs->loadLangs(array("companies", "other", "commercial", "bills", "orders", "agenda", "mails"));
 

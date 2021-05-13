@@ -36,6 +36,14 @@ require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
 require_once DOL_DOCUMENT_ROOT.'/comm/action/class/actioncomm.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/agenda.lib.php';
+
+// Eclipse definitions
+/** @var Translate $langs **/
+/** @var User $user **/
+/** @var DoliDB $db **/
+/** @var HookManager $hookmanager **/
+/** @var Conf $conf **/
+
 if (!empty($conf->projet->enabled)) {
 	require_once DOL_DOCUMENT_ROOT.'/core/class/html.formprojet.class.php';
 }
@@ -557,7 +565,7 @@ $eventarray = array();
 
 $sql = 'SELECT ';
 if ($usergroup > 0) $sql .= " DISTINCT";
-$sql .= ' a.id, a.label,';
+$sql .= ' a.id, a.label, a.note,';
 $sql .= ' a.datep,';
 $sql .= ' a.datep2,';
 $sql .= ' a.percent,';
@@ -687,6 +695,7 @@ if ($resql)
 
 		$event->libelle = $obj->label; // deprecated
 		$event->label = $obj->label;
+		$event->note_private = $obj->note;
 		$event->percentage = $obj->percent;
 		$event->authorid = $obj->fk_user_author; // user id of creator
 		$event->userownerid = $obj->fk_user_action; // user id of owner
