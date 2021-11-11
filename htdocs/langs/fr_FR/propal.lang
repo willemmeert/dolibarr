@@ -80,7 +80,15 @@ AvailabilityTypeAV_1W=1 semaine
 AvailabilityTypeAV_2W=2 semaines
 AvailabilityTypeAV_3W=3 semaines
 AvailabilityTypeAV_1M=1 mois
-##### Types of contacts #####
+AvailabilityTypeAV_4W=4 semaines
+AvailabilityTypeAV_6W=6 semaines
+AvailabilityTypeAV_3MONTH=3 mois
+AvailabilityTypeAV_5MONTH=5 mois
+AvailabilityTypeAV_6M=6 mois
+AvailabilityTypeAV_AGREE=A convenir
+AvailabilityTypeAV_CONFIRM=A confirmer
+
+##### Types ofe contacts #####
 TypeContact_propal_internal_SALESREPFOLL=Commercial suivi proposition
 TypeContact_propal_external_BILLING=Contact client facturation proposition
 TypeContact_propal_external_CUSTOMER=Contact client suivi proposition
@@ -101,6 +109,7 @@ DefaultModelPropalCreate=Modèle par défaut à la création
 DefaultModelPropalToBill=Modèle par défaut lors de la clôture d'une proposition commerciale (à facturer)
 DocModelAzurDescription=Un modèle de proposition complet (ancienne implémentation du modèle Cyan)
 DocModelCyanDescription=Un modèle de proposition complet
+DocModelMMTPropMDescription=modèle de proposition de MEMA pour les machines
 FichinterSigned=Intervention signée
 IdProduct=ID produit
 IdProposal=ID de la proposition commerciale
@@ -127,3 +136,7 @@ ExpeditionSigned=Envoi signé
 SignExpedition=Signer l'envoi
 PROPOSAL_SHOW_SHIPPING_ADDRESS=Afficher l'adresse de livraison
 PROPOSAL_SHOW_SHIPPING_ADDRESSMore=Indication obligatoire dans certains pays (France, ...)
+PrParentLine=Ligne parent de proposition
+# added MEMA
+ProposalCondMach = Les machines restent propriété de la société MEMA Machinery & Tools jusque paiement complet de la facture.
+
