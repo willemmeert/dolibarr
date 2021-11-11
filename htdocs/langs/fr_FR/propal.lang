@@ -69,7 +69,13 @@ AvailabilityTypeAV_NOW=Immédiate
 AvailabilityTypeAV_1W=1 semaine
 AvailabilityTypeAV_2W=2 semaines
 AvailabilityTypeAV_3W=3 semaines
-AvailabilityTypeAV_1M=1 mois
+AvailabilityTypeAV_4W=4 semaines
+AvailabilityTypeAV_6W=6 semaines
+AvailabilityTypeAV_3MONTH=3 mois
+AvailabilityTypeAV_5MONTH=5 mois
+AvailabilityTypeAV_6M=6 mois
+AvailabilityTypeAV_AGREE=A convenir
+AvailabilityTypeAV_CONFIRM=A confirmer
 ##### Types de contacts #####
 TypeContact_propal_internal_SALESREPFOLL=Commercial suivi proposition
 TypeContact_propal_external_BILLING=Contact client facturation proposition

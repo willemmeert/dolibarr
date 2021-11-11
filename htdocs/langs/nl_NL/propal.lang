@@ -69,6 +69,13 @@ AvailabilityTypeAV_1W=1 week
 AvailabilityTypeAV_2W=2 weken
 AvailabilityTypeAV_3W=3 weken
 AvailabilityTypeAV_1M=1 maand
+AvailabilityTypeAV_4W=4 weken
+AvailabilityTypeAV_6W=6 weken
+AvailabilityTypeAV_3MONTH=3 maand
+AvailabilityTypeAV_5MONTH=5 maand
+AvailabilityTypeAV_6M=6 maand
+AvailabilityTypeAV_AGREE=Overeen te komen
+AvailabilityTypeAV_CONFIRM=Te bevestigen
 ##### Types de contacts #####
 TypeContact_propal_internal_SALESREPFOLL=Vertegenwoordiger die de follow-up van de offerte doet
 TypeContact_propal_external_BILLING=Afnemersfactuurcontactpersoon
