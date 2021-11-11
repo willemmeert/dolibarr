@@ -35,6 +35,9 @@ require_once DOL_DOCUMENT_ROOT.'/core/modules/action/rapport.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array("agenda", "commercial"));
 
+// Initialize technical object to manage hooks of page. Note that conf->hooks_modules contains array of hook context
+$hookmanager->initHooks(array('agendarapport'));
+
 $action = GETPOST('action', 'aZ09');
 $month = GETPOST('month', 'int');
 $year = GETPOST('year', 'int');
@@ -54,6 +57,28 @@ if (!$sortorder) {
 }
 if (!$sortfield) {
 	$sortfield = "a.datep";
+}
+
+$filtert = GETPOST("search_filtert", "int", 3) ?GETPOST("search_filtert", "int", 3) : GETPOST("filtert", "int", 3);
+$usergroup = GETPOST("search_usergroup", "int", 3) ?GETPOST("search_usergroup", "int", 3) : GETPOST("usergroup", "int", 3);
+
+// If not choice done on calendar owner (like on left menu link "Agenda"), we filter on user.
+if (empty($filtert) && empty($conf->global->AGENDA_ALL_CALENDARS)) {
+	$filtert = $user->id;
+}
+
+// Set actioncode (this code must be same for setting actioncode into peruser, listacton and index)
+if (GETPOST('search_actioncode', 'array')) {
+    $actioncode = GETPOST('search_actioncode', 'array', 3);
+    if (!count($actioncode)) {
+    	$actioncode = '0';
+    }
+}
+else {
+    $actioncode = GETPOST("search_actioncode", "alpha", 3) ?GETPOST("search_actioncode", "alpha", 3) : (GETPOST("search_actioncode") == '0' ? '0' : (empty($conf->global->AGENDA_DEFAULT_FILTER_TYPE) ? '' : $conf->global->AGENDA_DEFAULT_FILTER_TYPE));
+}
+if ($actioncode == '' && empty($actioncodearray)) {
+	$actioncode = (empty($conf->global->AGENDA_DEFAULT_FILTER_TYPE) ? '' : $conf->global->AGENDA_DEFAULT_FILTER_TYPE);
 }
 
 // Security check
@@ -208,6 +233,9 @@ if ($resql) {
 	}
 	print "</table>";
 	print '</div>';
+
+	$object = new stdClass();
+	$reshook = $hookmanager->executeHooks('addFormElements', $parameters, $object, $action);	
 	print '</form>';
 
 	$db->free($resql);
