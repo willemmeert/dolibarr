@@ -234,6 +234,10 @@ if ($resql) {
 	print "</table>";
 	print '</div>';
 
+    $parameters = array( "filtert" => $filtert,
+	                     "canedit" => 1,
+						 "usergroupid" => $usergroup,
+						 "actioncode" => $actioncode);
 	$object = new stdClass();
 	$reshook = $hookmanager->executeHooks('addFormElements', $parameters, $object, $action);	
 	print '</form>';
