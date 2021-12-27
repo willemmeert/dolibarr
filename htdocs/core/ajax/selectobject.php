@@ -153,7 +153,6 @@ if ($objecttmp !== null && !empty($objecttmp->module)) {
 	restrictedArea($user, $objecttmp !== null ? $objecttmp->element : '', $id);
 }
 
-
 /*
  * View
  */

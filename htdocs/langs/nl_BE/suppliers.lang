@@ -1,5 +1,5 @@
 # Dolibarr language file - Source file is en_US - suppliers
-SupplierInvoices=Facturen leveranciers
+SupplierInvoices=Aankoopfacturen
 ShowSupplierInvoice=Toon leverancier factuur
 NewSupplierInvoice =Nieuwe leverancier factuur
 ListOfSuppliers=Lijst van leveranciers
@@ -7,3 +7,4 @@ SupplierPrices=Verkoper prijzen
 ApproveThisOrder=Opdracht goedkeuren
 DenyingThisOrder=Wijger deze bestelling
 BuyingPriceNumShort=Verkoper prijzen
+RefSupplierShort=Ref. lev.
