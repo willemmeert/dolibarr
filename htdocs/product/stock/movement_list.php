@@ -543,7 +543,7 @@ if ($search_warehouse != '' && $search_warehouse != '-1') {
 	$sql .= natural_search('e.rowid', $search_warehouse, 2);
 }
 if (!empty($search_user)) {
-	$sql .= natural_search('u.login', $search_user);
+	$sql .= natural_search(array('u.lastname', 'u.firstname', 'u.login'), $search_user);
 }
 if (!empty($search_batch)) {
 	$sql .= natural_search('m.batch', $search_batch);
@@ -1163,10 +1163,10 @@ if ($resql) {
 		print '<tr class="oddeven">';
 		// Id movement
 		if (!empty($arrayfields['m.rowid']['checked'])) {
-			print '<td>';
+			print '<td class="nowraponall">';
 			print img_picto($langs->trans("StockMovement"), 'movement', 'class="pictofixedwidth"');
 			print $objp->mid;
-			print '</td>'; // This is primary not movement id
+			print '</td>'; // This is primary key not movement ref
 		}
 		if (!empty($arrayfields['m.datem']['checked'])) {
 			// Date
