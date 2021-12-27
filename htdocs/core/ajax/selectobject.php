@@ -48,6 +48,7 @@ $htmlname = GETPOST('htmlname', 'aZ09');
 $outjson = (GETPOST('outjson', 'int') ? GETPOST('outjson', 'int') : 0);
 $id = GETPOSTINT('id');
 $objectfield = GETPOST('objectfield', 'alpha');	// 'MyObject:field' or 'MyModule_MyObject:field' or 'MyObject:option_field' or 'MyModule_MyObject:option_field'
+$filter = urldecode(GETPOST('filter'), 'alphanohtml');
 
 if (empty($htmlname)) {
 	httponly_accessforbidden('Bad value for param htmlname');
