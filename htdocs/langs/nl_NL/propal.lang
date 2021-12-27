@@ -97,6 +97,13 @@ IdProposal=Offerte-ID
 IdProduct=Product-ID
 PrParentLine=Voorstel bovenliggende lijn
 LineBuyPriceHT=Koopprijs bedrag exclusief BTW voor regel
+SignPropal=Accept proposal
+RefusePropal=Refuse proposal
+Sign=Ondertekenen
+PropalAlreadySigned=Voorstel al ondertekend
+PropalAlreadyRefused=Voorstel al geweigerd
+PropalSigned=Voorstel ondertekend
+PropalRefused=Voorstel geweigerd
+ConfirmRefusePropal=Bent U zeker om het voorstel te weigeren?
 # added MEMA
 ProposalCondMach = De machines blijven eigendom van de nv MEMA Machinery & Tools tot volledige betaling van de factuur.
-
