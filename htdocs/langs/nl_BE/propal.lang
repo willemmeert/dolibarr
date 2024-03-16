@@ -26,6 +26,8 @@ TypeContact_propal_external_BILLING=Contactpersoon afnemersfactuur
 TypeContact_propal_external_SHIPPING=Klantcontact voor leveringen
 NoSign=Refuse
 ProposalCustomerSignature=Stempel, datum en handtekening met vermelding "Voor Akkoord"
-DocModelMMTPropMDescription=Offertemodel MEMA voor machines
+DocModelMMTPropMDescription=Offertemodel MEMA voor machines met eigendomsvoorbehoud
+DocModelMMTPropMPDescription=Offertemodel MEMA voor machines met eigendomsvoorbehoud & prijsvermelding
 # added MEMA
 ProposalCondMach = De machines blijven eigendom van de nv MEMA Machinery & Tools tot volledige betaling van de factuur.
+ProposalCondPrice= Prijzen: in Euro, excl. BTW, franco op vrachtwagen (tenzij anders vermeld hierboven).
