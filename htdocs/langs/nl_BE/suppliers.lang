@@ -1,5 +1,9 @@
 # Dolibarr language file - Source file is en_US - suppliers
-ApproveThisOrder=Opdracht goedkeuren
-DenyingThisOrder=Wijger deze bestelling
-SupplierInvoices=Aankoopfacturen
+
 RefSupplierShort=Ref. lev.
+Suppliers=Aankopers
+SupplierInvoices=Aankoopfacturen
+SupplierPrices=Aankoopprijzen
+ApproveThisOrder=Opdracht goedkeuren
+DenyingThisOrder=Weiger deze bestelling
+BuyingPriceNumShort=Aankoopprijzen

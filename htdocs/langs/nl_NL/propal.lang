@@ -90,7 +90,6 @@ TypeContact_propal_internal_SALESREPFOLL=Vertegenwoordiger die de follow-up van 
 TypeContact_propal_external_BILLING=Afnemersfactuurcontactpersoon
 TypeContact_propal_external_CUSTOMER=Afnemerscontactpersoon follow-up voorstel
 TypeContact_propal_external_SHIPPING=Klant contact voor levering
-
 # Document models
 CantBeNoSign=kan niet worden ingesteld niet ondertekend
 CaseFollowedBy=Geval gevolgd door
@@ -121,7 +120,7 @@ PropalAlreadySigned=Voorstel al geaccepteerd
 PropalRefused=Voorstel geweigerd
 PropalSigned=Voorstel geaccepteerd
 ProposalCustomerSignature=Schriftelijke aanvaarding , stempel , datum en handtekening
-ProposalsStatisticsSuppliers=Leveranciersoffertes statistieken 
+ProposalsStatisticsSuppliers=Leveranciersoffertes statistieken
 RefusePropal=voorstel weigeren
 Sign=Teken
 SignContract=Teken contract
@@ -130,6 +129,8 @@ SignSociete_rib=Mandaat ondertekenen
 SignPropal=Aanvaard voorstel
 Signed=ondertekend
 SignedOnly=Alleen gesigneerd
+ExpeditionSigned=Verzending ondertekend
+SignExpedition=Verzending ondertekenen
 IdProposal=Offerte-ID
 IdProduct=Product-ID
 PrParentLine=Voorstel bovenliggende lijn
