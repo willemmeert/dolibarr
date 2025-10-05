@@ -16,3 +16,4 @@ WEBSITE_KEYWORDS=Trefwoorden
 ExternalSiteSetup=Setup link naar externe website
 ExternalSiteModuleNotComplete=Module ExternalSite werd niet correct geconfigureerd.
 FailedToGetFile=Mislukt om de bestanden te ontvangen %s
+PredefinedMailContentSendProposal=__(Geachte,)__\n\nIn de bijlage vindt u onze offerte __REF__ \n\n\n__(Met vriendelijke groeten,)__\n\n__SENDEREMAIL_SIGNATURE__
